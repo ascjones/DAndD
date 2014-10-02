@@ -12,6 +12,8 @@ let sendCommand cmd =
     | PlayerOrientationChanged p ->
         player <- p
         player
+    | PlayerMoved p ->
+        player <- p
     | x -> failwithf "Unhandled Event %A" x
 
 // turn left
@@ -19,3 +21,6 @@ sendCommand (Move(Turn(Left)))
 
 // turn right
 sendCommand (Move(Turn(Right)))
+
+// move forward
+sendCommand (Move(Forward))

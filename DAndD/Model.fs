@@ -1,8 +1,10 @@
 ﻿module Model
 
+open System
+
 type Orientation = | North | East | South | West
 type Coord = { X : int; Y : int }
-type Player = { Id : string; Orientation : Orientation; Coords : Coord }
+type Player = { Id : Guid; Orientation : Orientation; Coords : Coord }
 type CellState =
     | Empty 
     | Blocked
@@ -32,9 +34,9 @@ type Command =
     | Trade of TradeItemsCommand
 
 type Event =
-    | PlayerOrientationChanged of player : Player
-    | PlayerMoved of player : Player * coord : Coord
-    | ItemCollected of player : Player * coord : Coord * item : Item
+    | PlayerOrientationChanged of playerId : Guid * orientation : Orientation
+    | PlayerMoved of playerId : Guid * coord : Coord
+    | ItemCollected of playerId : Guid * coord : Coord * item : Item
 
 type Game =
     { Players : Player list
@@ -62,10 +64,10 @@ let handle game player command =
         match m with
         | Turn direction ->
             let newOrientation = turn player.Orientation direction
-            PlayerOrientationChanged({ player with Orientation = newOrientation })
+            PlayerOrientationChanged(player.Id, newOrientation)
         | Forward ->
             let newCoords = moveForward player
-            PlayerMoved(player, newCoords)
+            PlayerMoved(player.Id, newCoords)
     | x -> failwithf "Unsupported command %A" x
 
 
