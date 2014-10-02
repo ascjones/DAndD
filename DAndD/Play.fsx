@@ -9,9 +9,9 @@ let game = { Players = [player]; Grid = { Width = 10; Height = 10} }
 let sendCommand cmd = 
     let event = handle game player cmd
     match event with
-    | PlayerOrientationChanged p ->
-        player <- p
-        player
+//    | PlayerOrientationChanged p ->
+//        player <- p
+//        player
     | PlayerMoved p ->
         player <- p
     | x -> failwithf "Unhandled Event %A" x

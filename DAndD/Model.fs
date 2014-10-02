@@ -4,7 +4,7 @@ open System
 
 type Orientation = | North | East | South | West
 type Coord = { X : int; Y : int }
-type Player = { Id : Guid; Orientation : Orientation; Coords : Coord }
+type Player = { Id : string; Orientation : Orientation; Coords : Coord }
 type CellState =
     | Empty 
     | Blocked
@@ -34,9 +34,9 @@ type Command =
     | Trade of TradeItemsCommand
 
 type Event =
-    | PlayerOrientationChanged of playerId : Guid * orientation : Orientation
-    | PlayerMoved of playerId : Guid * coord : Coord
-    | ItemCollected of playerId : Guid * coord : Coord * item : Item
+    | PlayerOrientationChanged of playerId : string * orientation : Orientation
+    | PlayerMoved of playerId : string * coord : Coord
+    | ItemCollected of playerId : string * coord : Coord * item : Item
 
 type Game =
     { Players : Player list
