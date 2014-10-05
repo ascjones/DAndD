@@ -14,7 +14,7 @@ and Item =
     | GoldCoin
     | Scroll
 type Cell = { Coord : Coord; State : CellState }
-type Grid = { Width : int; Height : int }
+type Grid = { Cells : Cell list }
 
 type MoveCommand = 
     | Forward
@@ -69,6 +69,32 @@ let handle game player command =
             let newCoords = moveForward player
             PlayerMoved(player.Id, newCoords)
     | x -> failwithf "Unsupported command %A" x
+
+
+let buildGrid (gridAscii : string) = 
+    let cells,_ = 
+        gridAscii.Trim().ToCharArray()
+        |> Seq.fold (fun (cells,nextCoord) ch ->
+
+            if ch = '\010' then
+                let coord = { nextCoord with X = 0; Y = nextCoord.Y + 1 }
+                cells,coord
+            else
+                let cellState = 
+                    match ch with
+                    | '#' -> Blocked
+                    | ' ' -> Empty
+                    | 'b' -> ContainsItem(Bone)
+                    | 'g' -> ContainsItem(GoldCoin)
+                    | 's' -> ContainsItem(Scroll)
+                    | x -> failwithf "Unsupported character %A" x
+        
+                let coord = { nextCoord with X = nextCoord.X + 1; Y = nextCoord.Y }
+                let cell = { State = cellState; Coord = nextCoord }
+                cell::cells,coord ) ([],{ X = 0; Y = 0 })
+    cells
+
+
 
 
 
