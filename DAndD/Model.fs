@@ -5,6 +5,7 @@ open System
 type Orientation = | North | East | South | West
 type Coord = { X : int; Y : int }
 type Player = { Id : string; Orientation : Orientation; Coords : Coord }
+
 type CellState =
     | Empty 
     | Blocked
@@ -13,6 +14,7 @@ and Item =
     | Bone
     | GoldCoin
     | Scroll
+
 type Cell = { Coord : Coord; State : CellState }
 type Grid = { Cells : Cell list }
 
