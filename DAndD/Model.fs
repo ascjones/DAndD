@@ -16,7 +16,8 @@ and Item =
     | Scroll
 
 type Cell = { Coord : Coord; State : CellState }
-type Grid = { Cells : Cell list }
+type Grid = { Cells : Cell list } 
+    with static member empty = { Cells = [] }
 
 type MoveCommand = 
     | Forward
@@ -35,7 +36,13 @@ type Command =
     | Move of MoveCommand
     | Trade of TradeItemsCommand
 
+type PlayerCommand =
+    { PlayerId : string
+      Command : Command }
+
 type Event =
+    | GameStarted of grid : Grid * initiatingPlayer : Player
+    | PlayerJoined of Player
     | PlayerOrientationChanged of playerId : string * orientation : Orientation
     | PlayerMoved of playerId : string * coord : Coord
     | ItemCollected of playerId : string * coord : Coord * item : Item
@@ -43,6 +50,8 @@ type Event =
 type Game =
     { Players : Player list
       Grid : Grid }
+    with static member initial = 
+        { Players = []; Grid = Grid.empty }
 
 //type CommandHandler = Command -> Event list
 
@@ -71,6 +80,13 @@ let handle game player command =
             let newCoords = moveForward player
             PlayerMoved(player.Id, newCoords)
     | x -> failwithf "Unsupported command %A" x
+
+
+let evolve state = 
+    function 
+    | GameStarted (grid,p) -> { Players = [p]; Grid = grid }
+    | PlayerJoined p -> { state with Players = p::state.Players }
+    | c -> failwithf "Command %A not yet implemented" c
 
 
 let buildGrid (gridAscii : string) = 

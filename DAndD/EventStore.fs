@@ -49,10 +49,8 @@ module EventStore =
 
     let create (ip: IPAddress) port =  
         
-        let credentials = new SystemData.UserCredentials("admin", "changeit")
         let connSettings = 
             !> ConnectionSettings.Create()
-                .SetDefaultUserCredentials(credentials) // .UseConsoleLogger().EnableVerboseLogging()
                 .SetDefaultUserCredentials(new SystemData.UserCredentials("admin", "changeit"))
                 .KeepRetrying()
                 .KeepReconnecting()
@@ -86,3 +84,43 @@ module EventStore =
         let serializedEvents = Seq.map serialize newEvents
         do! Async.AwaitTask (store.AppendToStreamAsync(streamId, expectedVersion, serializedEvents)) |> Async.Ignore }
         |> Async.RunSynchronously
+
+    let streamExists (store : IEventStoreConnection) streamId =
+        let task = store.ReadStreamEventsForwardAsync(streamId, StreamPosition.Start, 1, false)
+        task.Wait()
+        task.Result.Status = SliceReadStatus.Success
+
+
+module Async = 
+    module EventStore =
+        open System
+        open System.Net
+        open EventStore.ClientAPI
+        open Serialization
+
+
+        let create = EventStore.create 
+
+        let subscribe = EventStore.subscribe
+        
+        let readStream (store: IEventStoreConnection) streamId version count = 
+            async {
+                let! slice = store.AsyncReadStreamEventsForward streamId version count true
+
+                let events = 
+                    slice.Events 
+                    |> Seq.choose EventStore.deserialize
+                    |> Seq.toList
+                
+                let nextEventNumber = 
+                    if slice.IsEndOfStream 
+                    then None 
+                    else Some slice.NextEventNumber
+
+                return events, slice.LastEventNumber, nextEventNumber }
+
+        let appendToStream (store: IEventStoreConnection) streamId expectedVersion newEvents = 
+            async {
+                let serializedEvents = [| for event in newEvents -> EventStore.serialize event |]
+
+                do! store.AsyncAppendToStream streamId expectedVersion serializedEvents |> Async.Ignore }
