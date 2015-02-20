@@ -38,9 +38,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EventStore.ClientAPI">
-      <HintPath>..\packages\EventStore.Client.3.0.0\lib\net40\EventStore.ClientAPI.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
@@ -53,9 +50,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Serialization.fs" />
     <Compile Include="Model.fs" />
-    <Compile Include="EventStore.fs" />
     <Compile Include="CommandHandler.fs" />
     <Compile Include="Program.fs" />
     <None Include="Play.fsx" />
