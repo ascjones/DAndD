@@ -3,4 +3,13 @@ NUGET
   specs:
     Akka (0.8.0)
       Newtonsoft.Json (>= 6.0.1)
+    Akka.FSharp (0.8.0)
+      Akka (>= 0.8.0)
+      FSPowerPack.Core.Community (>= 3.0.0.0)
+      FSPowerPack.Linq.Community (>= 3.0.0.0)
+      FsPickler (>= 0.9.11)
+    FsPickler (1.0.11)
+    FSPowerPack.Core.Community (3.0.0.0)
+    FSPowerPack.Linq.Community (3.0.0.0)
+      FSPowerPack.Core.Community
     Newtonsoft.Json (6.0.8)
