@@ -2,15 +2,24 @@
 
 open System
 open Model
+open Akka
+open Akka.FSharp
 
 [<EntryPoint>]
 let main argv = 
 
-    let gameStreamId = "Game-1"
+    let gameId = "1"
 
-    printf "Welcome to D & D, please enter your name: "
-    let playerName = Console.ReadLine()
-    printf "Welcome %s" playerName
+    let system = System.create "DAndD" <| Configuration.load()
+
+//    let game = system |> Actors.createGame "1"
+//    game <! (Move Forward)
+
+    Console.ReadKey() |> ignore
+
+//    printf "Welcome to D & D, please enter your name: "
+//    let playerName = Console.ReadLine()
+//    printf "Welcome %s" playerName
         
     // if no existing game, create a new game
     // if there's an existing game, join that game
