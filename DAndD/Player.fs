@@ -6,11 +6,13 @@ module Player =
     open DAndD.Model
 
     let turn (orientation : Orientation) d = 
+        let leftOrRight left right =
+            match d with Left -> left | Right -> right
         match orientation with
-        | North -> match d with Left -> West | Right -> East
-        | South -> match d with Left -> East | Right -> West
-        | East  -> match d with Left -> North | Right -> South
-        | West  -> match d with Left -> South | Right -> North
+        | North -> leftOrRight West East
+        | South -> leftOrRight East West 
+        | East  -> leftOrRight North South
+        | West  -> leftOrRight South North
 
     let moveForward player = 
         let coords = player.Coords
