@@ -2,7 +2,7 @@
 
 module Levels =
 
-    open Model
+    open DAndD.Model
 
     let buildGrid (gridAscii : string) = 
         let toCell ch = 
@@ -14,19 +14,18 @@ module Levels =
             | 's' -> ContainsItem(Scroll)
             | x -> failwithf "Unsupported character %A" x
 
-        let gridChars = gridAscii.ToCharArray() |> Array.toList
+        let gridChars = gridAscii.Trim().ToCharArray() |> Array.toList
 
         let cells = 
             let rec loop row grid chars =
                 match chars with
-                | [] -> grid |> List.rev
-                | c::' '::cs -> 
-                    let cell = c |> toCell
-                    loop (cell::row) grid cs
-                | '#'::'\010'::cs ->
-                    let row' = row |> List.rev
+                | []         -> grid |> List.rev
+                | '#'::[]    -> loop (Blocked::row) grid []
+                | c::' '::cs -> loop ((c |> toCell)::row) grid cs
+                | '#'::'\013'::'\010'::cs ->
+                    let row' = Blocked::row |> List.rev
                     loop [] (row'::grid) cs
-                | cs -> failwithf "Failed to parse grid: invalid chars combo %A" cs
+                | cs -> failwithf "Failed to parse grid: invalid chars combo %A" <| new System.String(cs |> List.toArray)
             loop [] [] gridChars
 
         let dim1 = cells |> Seq.map (fun c -> c |> Seq.length) |> Seq.max
@@ -37,7 +36,7 @@ module Levels =
     let Level1 = 
         buildGrid @"
 # # # # # # # #
-#             #    
+#             #
 # # # # #     #
 #             #
 #       #     #
