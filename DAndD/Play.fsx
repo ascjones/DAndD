@@ -1,37 +1,4 @@
-﻿let grid = @"
-########
-#      #    
-#####  #
-#      #
-#   #  #
-#####  #
-#      #
-########
-"
-
-//let mutable player = { Id = "Andrew"; Coords = { X = 3; Y = 3 }; Orientation = Orientation.North }
-//let game = { Players = [player]; Grid = { Width = 10; Height = 10} }
-//
-//let sendCommand cmd = 
-//    let event = handle game player cmd
-//    match event with
-////    | PlayerOrientationChanged p ->
-////        player <- p
-////        player
-//    | PlayerMoved p ->
-//        player <- p
-//    | x -> failwithf "Unhandled Event %A" x
-//
-//// turn left
-//sendCommand (Move(Turn(Left)))
-//
-//// turn right
-//sendCommand (Move(Turn(Right)))
-//
-//// move forward
-//sendCommand (Move(Forward))
-
-// ACTORS
+﻿// ACTORS
 
 #r @"..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll"
 #r @"..\packages\FsPickler\lib\net45\FsPickler.dll"
@@ -40,14 +7,17 @@
 
 #load "Model.fs"
 #load "Game.fs"
+#load "Player.fs"
+#load "Levels.fs"
 
 open Akka.FSharp
 open DAndD
 open DAndD.Model
-open DAndD.Game
 
 let system = System.create "DAndD" <| Configuration.load()
 
-let game = system |> Game.create "1"
-let move = Foo
-game <! Bar
+let game = system |> Game.create (GameId "1") Levels.Level1
+
+let player1 = system |> Player.create (PlayerId "Andrew")
+
+player1 <! Move Forward
