@@ -22,8 +22,12 @@ module Player =
         | East  -> { coords with X = coords.X + 1 }
         | West  -> { coords with X = coords.X - 1 }
 
-    let handle cmd player = 
+    let handle cmd player system = 
         match cmd with
+        | JoinGame gameId ->
+            let gameAddress = Game.gameAddress "DAndD" gameId
+            let game = select gameAddress system 
+            game <! 
         | Move m ->
             match m with
             | Turn direction ->

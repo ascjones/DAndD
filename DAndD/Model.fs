@@ -2,6 +2,9 @@
 
 module Model = 
 
+    type GameId = GameId of string
+    type PlayerId = PlayerId of string
+
     type Cell = Empty | Blocked | ContainsItem of Item
     and Item = Bone | GoldCoin | Scroll
 
@@ -22,10 +25,7 @@ module Model =
 
     type GameState = 
         { Grid : Cell [,]
-          Players : PlayerState list }
-
-    type GameId = GameId of string
-    type PlayerId = PlayerId of string
+          PlayerLocations : Map<PlayerId, Coord> }
 
     type PlayerCommand =
         | JoinGame of GameId

@@ -16,8 +16,9 @@ open DAndD.Model
 
 let system = System.create "DAndD" <| Configuration.load()
 
-let game = system |> Game.create (GameId "1") Levels.Level1
+let gameId = GameId "1"
+let game = system |> Game.create gameId Levels.Level1
 
 let player1 = system |> Player.create (PlayerId "Andrew")
 
-player1 <! Move Forward
+player1 <! JoinGame gameId
