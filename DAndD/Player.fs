@@ -50,6 +50,7 @@ module Player =
             let rec loop player = actor {
                 let! cmd = mailbox.Receive()
                 let evts = player |> handle cmd
-                let player' = player |> apply evts 
+                let player' = player |> apply evts
+                printfn "Player State %A" player'
                 return! loop player' }
             loop <| PlayerState.New

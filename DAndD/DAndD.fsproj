@@ -53,6 +53,8 @@
     <Compile Include="Model.fs" />
     <Compile Include="CommandHandler.fs" />
     <Compile Include="Game.fs" />
+    <Compile Include="Player.fs" />
+    <Compile Include="Levels.fs" />
     <Compile Include="Program.fs" />
     <None Include="Play.fsx" />
     <None Include="App.config" />
