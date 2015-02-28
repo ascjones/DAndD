@@ -2,6 +2,7 @@
 
 module Messages = 
 
+    type GameId = GameId of int
     type PlayerId = PlayerId of int
 
     type Direction = Left | Right
