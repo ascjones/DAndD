@@ -13,10 +13,10 @@ module Server =
     and Item = Bone | GoldCoin | Scroll
     and Player = 
         { Actor : ActorRef 
+          Orientation : Orientation
           Location : Coords }
+    and Orientation = North | South | East | West
     and Coords = { X : int; Y : int }
-
-    let player msg = ()
 
     [<EntryPoint>]
     let main argv = 
@@ -38,20 +38,15 @@ module Server =
                         | JoinGame ->
                             let playerActorId = match playerId with PlayerId id -> sprintf "player-%i" id
                             printfn "Player %s requested to join the game" playerActorId
-                            let playerActor = spawn mailbox playerActorId (actorOf player)
-                            let player = { Actor = playerActor; Location = { X = 0; Y = 0 } }
+                            let player = { Actor = mailbox.Sender (); Location = { X = 0; Y = 0 }; Orientation = East }
                             return! loop { state with Players = state.Players |> Map.add playerId player }
                         | x -> 
                              printfn "Command %A not implemented" x
                              return! loop state
                     | PlayerCommand pc -> 
-                        match pc with
-                        | Turn direction ->
-                            printfn "Player turn %A requested" direction
-                            return! loop state
-                        | MoveForwards ->
-                            printfn "Player move forwards requested"
-                            return! loop state
+//                        let player = state.Players |> Map.find playerId
+//                        player.Actor <! 
+                        return! loop state
                 }
                 loop { Grid = Array2D.zeroCreate 10 10; Players = Map.empty } // todo init game correctly
                 
