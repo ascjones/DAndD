@@ -2,18 +2,21 @@
 
 module Server = 
 
+    open Akka.Actor
     open Akka.FSharp
     open DAndD.Messages
 
-    let player msg = ()
+    type GameState = 
+        { Grid : Cell [,] 
+          Players : Map<PlayerId,Player> }
+    and Cell = Empty | Blocked | ContainsItem of Item
+    and Item = Bone | GoldCoin | Scroll
+    and Player = 
+        { Actor : ActorRef 
+          Location : Coords }
+    and Coords = { X : int; Y : int }
 
-    let game (mailbox : Actor<PlayerMessage>) (playerId,msg) =
-        match msg with
-        | JoinGame ->
-            let playerActorId = match playerId with PlayerId id -> sprintf "player-%i" id
-            printfn "Player %s requested to join the game" playerActorId
-            //            spawn mailbox playerActorId (actorOf player)
-        | x -> printfn "Command %A not yet implemented" x
+    let player msg = ()
 
     [<EntryPoint>]
     let main argv = 
@@ -24,9 +27,31 @@ module Server =
         let gameId = GameId 1
         let gameActorId = match gameId with GameId id -> sprintf "game-%i" id
         // spawn the game actor
-        let game = spawn system gameActorId <| actorOf2 game
+        let game = 
+            spawn system gameActorId 
+            <| fun mailbox -> 
+                let rec loop state = actor {
+                    let! (playerId,msg) = mailbox.Receive()
+                    match msg with
+                    | GameCommand gc ->
+                        match gc with
+                        | JoinGame ->
+                            let playerActorId = match playerId with PlayerId id -> sprintf "player-%i" id
+                            printfn "Player %s requested to join the game" playerActorId
+                            let playerActor = spawn mailbox playerActorId (actorOf player)
+                            let player = { Actor = playerActor; Location = { X = 0; Y = 0 } }
+                            return! loop { state with Players = state.Players |> Map.add playerId player }
+                        | x -> 
+                             printfn "Command %A not implemented" x
+                             return! loop state
+                    | x -> 
+                        printfn "Command %A not implemented" x
+                        return! loop state
+                }
+                loop { Grid = Array2D.zeroCreate 10 10; Players = Map.empty } // todo init game correctly
+                
 
-        game <! (PlayerId 1, JoinGame)
+        game <! (PlayerId 1, GameCommand JoinGame)
 
         System.Console.ReadKey() |> ignore
 
