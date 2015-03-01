@@ -44,14 +44,21 @@ module Server =
                         | x -> 
                              printfn "Command %A not implemented" x
                              return! loop state
-                    | x -> 
-                        printfn "Command %A not implemented" x
-                        return! loop state
+                    | PlayerCommand pc -> 
+                        match pc with
+                        | Turn direction ->
+                            printfn "Player turn %A requested" direction
+                            return! loop state
+                        | MoveForwards ->
+                            printfn "Player move forwards requested"
+                            return! loop state
                 }
                 loop { Grid = Array2D.zeroCreate 10 10; Players = Map.empty } // todo init game correctly
                 
 
         game <! (PlayerId 1, GameCommand JoinGame)
+        game <! (PlayerId 1, PlayerCommand <| Turn Left)
+        game <! (PlayerId 1, PlayerCommand <| MoveForwards)
 
         System.Console.ReadKey() |> ignore
 
