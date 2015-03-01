@@ -4,6 +4,7 @@ module Player =
 
     open Akka.FSharp
     open DAndD.Model
+    open DAndD.Messages
 
     let turn (orientation : Orientation) d = 
         let leftOrRight left right =
@@ -47,14 +48,21 @@ module Player =
             | ItemCollected item -> { p with Items = item::player.Items }
         ) player
     
-//    let create id system =
-//        let playerId = match id with PlayerId s -> "player" + s
-//        spawn system playerId
-//        <| fun mailbox ->
-//            let rec loop player = actor {
-//                let! cmd = mailbox.Receive()
-//                let evts = player |> handle cmd
-//                let player' = player |> apply evts
-//                printfn "Player State %A" player'
-//                return! loop player' }
-//            loop <| PlayerState.New
+    let joinGame system playerId game =
+        let playerAddress = match playerId with PlayerId i -> sprintf "player-%i" i
+        spawn system playerAddress
+        <| fun mailbox ->
+            let rec loop player = actor {
+                let! msg = mailbox.Receive()
+                match msg with
+                | Command cmd -> 
+                    match cmd with
+                    | Turn direction ->
+                        let orientation = turn player.Orientation direction
+                        let evt = OrientationChanged orientation
+                        game <! PlayerEvent (playerId, evt)
+                        let player' = apply [evt] player
+                        return! loop player'
+                | Event evt -> return! loop player
+                return! loop player }
+            loop <| PlayerState.New

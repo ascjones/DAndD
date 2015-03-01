@@ -2,8 +2,8 @@
 
 module Model = 
 
-    type GameId = GameId of string
-    type PlayerId = PlayerId of string
+    type GameId = GameId of int
+    type PlayerId = PlayerId of int
 
     type Cell = Empty | Blocked | ContainsItem of Item
     and Item = Bone | GoldCoin | Scroll
@@ -27,26 +27,7 @@ module Model =
         { Grid : Cell [,]
           PlayerLocations : Map<PlayerId, Coord> }
 
-    type PlayerCommand =
-        | JoinGame of GameId
-        | Move of MoveCommand
-        | Trade of TradeItemsCommand
-    and MoveCommand = 
-        | Forward 
-        | Turn of Direction
-    and Direction = 
-        | Left 
-        | Right
-    and TradeItemsCommand = 
-        { Sell1 : Item
-          Sell2 : Item
-          Sell3 : Item
-          Buy : Item }
-
-    type PlayerEvent = 
-        | OrientationChanged of Orientation
-        | Moved of Coord
-        | ItemCollected of Item
+   
 
     
 
