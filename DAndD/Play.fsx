@@ -7,7 +7,6 @@
 
 #load "Model.fs"
 #load "Messages.fs"
-#load "Player.fs"
 #load "Game.fs"
 #load "Levels.fs"
 
@@ -15,13 +14,13 @@ open Akka.FSharp
 open DAndD
 open DAndD.Model
 open DAndD.Messages
-open DAndD.Player
 
 let system = System.create "DAndD" <| Configuration.load()
 
 let gameId = GameId 1
 let game = system |> Game.create gameId Levels.Level1
 
-let player1 = Player.joinGame system (PlayerId 1) game
+//let player1 = Player.joinGame system (PlayerId 1) game
 
-player1 <! Command (Turn Left)
+game <! PlayerId 1, Turn Left
+ 

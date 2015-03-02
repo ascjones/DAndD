@@ -4,15 +4,10 @@ module Messages =
 
     open DAndD.Model
 
-    //
-    // Player Messages
-    //
-
-    type PlayerMessage =
-        | Command of PlayerCommand
-        | Event of PlayerEvent
+    type PlayerMessage = PlayerId * PlayerCommand
 
     and PlayerCommand =
+        | JoinGame
         | Turn of Direction
         | MoveForwards
         | Trade of TradeItemsCommand        
@@ -24,18 +19,5 @@ module Messages =
           Sell2 : Item
           Sell3 : Item
           Buy : Item }
-
-    and PlayerEvent = 
-        | OrientationChanged of Orientation
-        | Moved of Coord
-        | ItemCollected of Item
-
-    //
-    // Game Messages
-    //
-
-    type GameMessage = 
-        | PlayerEvent of PlayerId * PlayerEvent
-
 
 
