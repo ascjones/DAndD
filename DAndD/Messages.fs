@@ -4,10 +4,13 @@ module Messages =
 
     open DAndD.Model
 
-    type PlayerMessage = PlayerId * PlayerCommand
+    type GameMessage = PlayerId * GameCommand
+
+    and GameCommand = 
+        | JoinGame
+        | PlayerCommand of PlayerCommand
 
     and PlayerCommand =
-        | JoinGame
         | Turn of Direction
         | MoveForwards
         | Trade of TradeItemsCommand        
