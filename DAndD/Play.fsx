@@ -18,9 +18,9 @@ open DAndD.Messages
 let system = System.create "DAndD" <| Configuration.load()
 
 let gameId = GameId 1
-let game = system |> Game.create gameId Levels.Level1
+let game = system |> Game.createGame gameId Levels.Level1
 
 game <! (PlayerId 1, JoinGame)
-game <! (PlayerId 1, PlayerCommand (Turn Left))
+game <! (PlayerId 1, PlayerCommand (Turn Right))
 game <! (PlayerId 1, PlayerCommand (MoveForwards))
  

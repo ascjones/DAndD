@@ -7,12 +7,22 @@ module Game =
     open DAndD.Model
     open DAndD.Messages
 
-    type PlayerState = 
-        { Orientation : Orientation
+    let actorWithState (fn : Actor<'Message> -> 'State -> 'Message -> 'State) (initialState : 'State) (mailbox : Actor<'Message>) : Cont<'Message, 'Returned> = 
+        let rec loop state = 
+            actor { 
+                let! msg = mailbox.Receive()
+                let newState = fn mailbox state msg
+                return! loop newState
+            }
+        loop initialState
+
+    type Player = 
+        { Id : PlayerId
+          Orientation : Orientation
           Coords : Coord 
           Items : Item list }
-        static member New = 
-            { Orientation = North; Coords = {X = 0; Y = 0}; Items = [] }
+        static member New id = 
+            { Id = id; Orientation = North; Coords = {X = 0; Y = 0}; Items = [] }
 
     type GameState = 
         { Grid : Cell [,]
@@ -40,24 +50,33 @@ module Game =
         | East  -> { coords with X = coords.X + 1 }
         | West  -> { coords with X = coords.X - 1 }
 
-    let createPlayer playerId game = 
-        let playerId = playerId |> playerIdStr
-        spawn game playerId
-        <| fun mailbox ->
-            let rec loop player = actor {
-                let! msg = mailbox.Receive()
-                match msg with
-                | Turn direction -> 
-                    let newOrientation = player |> turn direction
-                    printfn "%A new orientation %A" playerId newOrientation
-                    return! loop { player with Orientation = newOrientation }
-                | MoveForwards ->
-                    let newCoords = moveForward player
-                    printfn "%A moved forwards %A" playerId newCoords
-                    return! loop { player with Coords = newCoords } }
-            loop PlayerState.New
+    let player mailbox state = function
+        | Turn direction -> 
+            let newOrientation = state |> turn direction
+            printfn "%A new orientation %A" state.Id newOrientation
+            { state with Orientation = newOrientation }
+        | MoveForwards ->
+            let newCoords = moveForward state
+            printfn "%A moved forwards %A" state.Id newCoords
+            { state with Coords = newCoords }
 
-    let create gameId grid system = 
+    let createPlayer playerId game = 
+        let idString = playerId |> playerIdStr
+        spawn game idString <| actorWithState player (Player.New playerId)
+
+    let game mailbox state msg =
+        let playerId,cmd = msg
+        match cmd with
+        | JoinGame ->
+            printfn "%A joined game" playerId
+            let player = createPlayer playerId mailbox
+            { state with Players = state.Players |> Map.add playerId player }
+        | PlayerCommand cmd -> 
+            let player = state.Players |> Map.find playerId
+            player <! cmd
+            state
+
+    let createGame gameId grid system = 
         let gameId = gameId |> gameIdStr
         spawn system gameId
         <| fun mailbox ->
