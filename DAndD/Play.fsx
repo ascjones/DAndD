@@ -22,4 +22,5 @@ let game = system |> Game.create gameId Levels.Level1
 
 game <! (PlayerId 1, JoinGame)
 game <! (PlayerId 1, Turn Left)
+game <! (PlayerId 1, MoveForwards)
  

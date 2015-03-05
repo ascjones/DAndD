@@ -51,19 +51,21 @@ module Game =
 
                 match msg with
                 | JoinGame ->
-                    printfn "Player %A joined game" playerId
+                    printfn "%A joined game" playerId
                     let game' = updatePlayer PlayerState.New
                     return! loop game'
                 | Turn direction ->
-                    printfn "Player %A requested to turn %A" playerId direction
+                    printfn "%A requested to turn %A" playerId direction
                     let player = game.Players |> Map.find playerId
                     let newOrientation = turn player.Orientation direction
+                    printfn "%A new orientation %A" playerId newOrientation
                     let game' = updatePlayer { player with Orientation = newOrientation }
                     return! loop game'
                 | MoveForwards ->
-                    printfn "Player %A requested to move forwards" playerId
+                    printfn "%A requested to move forwards" playerId
                     let player = game.Players |> Map.find playerId
                     let newCoords = moveForward player
+                    printfn "%A new coordinates %A" playerId newCoords
                     let game' = updatePlayer { player with Coords = newCoords }
                     return! loop game'
                 return! loop game }
