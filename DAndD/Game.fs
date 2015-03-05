@@ -24,8 +24,8 @@ module Game =
         static member New id = 
             { Id = id; Orientation = North; Coords = {X = 0; Y = 0}; Items = [] }
 
-    type GameState = 
-        { Grid : Cell [,]
+    type Game = 
+        { Grid : Map<Coord, ActorRef>
           Players : Map<PlayerId, ActorRef> }
 
     let private gameIdStr gameId = match gameId with GameId id -> sprintf "game-%i" id
@@ -49,6 +49,31 @@ module Game =
         | South -> { coords with Y = coords.Y - 1 }
         | East  -> { coords with X = coords.X + 1 }
         | West  -> { coords with X = coords.X - 1 }
+
+    type CellMessage = PlayerMoveRequest of PlayerId
+    type CellEvent = 
+        | PlayerEntered of PlayerId
+        | ItemCollected of Item
+        | CellOccupied of PlayerId
+        | CellBlocked
+
+    let cell (mailbox : Actor<_>) state = function
+        | PlayerMoveRequest playerId ->
+            let player = mailbox.Sender()
+            match state with
+            | Occupied otherPlayerId -> 
+                player <! CellOccupied otherPlayerId
+                state
+            | Blocked ->                
+                player <! CellBlocked
+                state
+            | ContainsItem item ->      
+                player <! ItemCollected item
+                player <! PlayerEntered playerId
+                Occupied playerId
+            | Empty ->
+                player <! PlayerEntered playerId
+                Occupied playerId
 
     let player mailbox state = function
         | Turn direction -> 
@@ -78,21 +103,6 @@ module Game =
 
     let createGame gameId grid system = 
         let gameId = gameId |> gameIdStr
-        spawn system gameId
-        <| fun mailbox ->
-            let rec loop game = actor {
-                let! playerId,msg = mailbox.Receive()
-                match msg with
-                | JoinGame ->
-                    printfn "%A joined game" playerId
-                    let player = createPlayer playerId mailbox
-                    let game' = { game with Players = game.Players |> Map.add playerId player }
-                    return! loop game'
-                | PlayerCommand cmd -> 
-                    let player = game.Players |> Map.find playerId
-                    player <! cmd
-                    return! loop game
-                return! loop game }
-            loop { Grid = grid; Players = Map.empty }
+        spawn system gameId <| actorWithState game { Players = Map.empty; Grid = Map.empty }
 
     

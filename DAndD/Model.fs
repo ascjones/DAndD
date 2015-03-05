@@ -5,7 +5,11 @@ module Model =
     type GameId = GameId of int
     type PlayerId = PlayerId of int
 
-    type Cell = Empty | Blocked | ContainsItem of Item
+    type Cell = 
+        | Empty 
+        | Blocked 
+        | ContainsItem of Item
+        | Occupied of PlayerId
     and Item = Bone | GoldCoin | Scroll
 
     and Orientation = 
