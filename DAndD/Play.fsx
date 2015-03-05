@@ -20,7 +20,6 @@ let system = System.create "DAndD" <| Configuration.load()
 let gameId = GameId 1
 let game = system |> Game.create gameId Levels.Level1
 
-//let player1 = Player.joinGame system (PlayerId 1) game
-
-game <! PlayerId 1, Turn Left
+game <! (PlayerId 1, JoinGame)
+game <! (PlayerId 1, Turn Left)
  

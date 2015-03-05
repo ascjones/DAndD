@@ -5,7 +5,6 @@ module Game =
     open Akka.FSharp
     open DAndD.Model
     open DAndD.Messages
-    open DAndD.Player
 
     type PlayerState = 
         { Orientation : Orientation
@@ -44,19 +43,28 @@ module Game =
         spawn system gameId'
         <| fun mailbox ->
             let rec loop game = actor {
+
                 let! playerId,msg = mailbox.Receive()
+
+                let updatePlayer player = 
+                    { game with Players = game.Players |> Map.add playerId player }
+
                 match msg with
                 | JoinGame ->
-                    let player = 
+                    printfn "Player %A joined game" playerId
+                    let game' = updatePlayer PlayerState.New
+                    return! loop game'
                 | Turn direction ->
+                    printfn "Player %A requested to turn %A" playerId direction
                     let player = game.Players |> Map.find playerId
                     let newOrientation = turn player.Orientation direction
-                    let game' = { game with Players = game.Players |> Map.add playerId { player with Orientation = newOrientation } }
+                    let game' = updatePlayer { player with Orientation = newOrientation }
                     return! loop game'
                 | MoveForwards ->
+                    printfn "Player %A requested to move forwards" playerId
                     let player = game.Players |> Map.find playerId
                     let newCoords = moveForward player
-                    let game' = { game with Players = game.Players |> Map.add playerId { player with Coords = newCoords } }
+                    let game' = updatePlayer { player with Coords = newCoords }
                     return! loop game'
                 return! loop game }
             loop { Grid = grid; Players = Map.empty }
