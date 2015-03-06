@@ -13,8 +13,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Server", "Server\Server.fsp
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Client", "Client\Client.fsproj", "{0673D602-53C6-46FF-89DA-98D2243EEC7F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Messages", "Messages\Messages.fsproj", "{FEE54F79-7676-4182-8ECA-22DA3B234DEE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,10 +31,6 @@ Global
 		{0673D602-53C6-46FF-89DA-98D2243EEC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0673D602-53C6-46FF-89DA-98D2243EEC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0673D602-53C6-46FF-89DA-98D2243EEC7F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEE54F79-7676-4182-8ECA-22DA3B234DEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEE54F79-7676-4182-8ECA-22DA3B234DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEE54F79-7676-4182-8ECA-22DA3B234DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEE54F79-7676-4182-8ECA-22DA3B234DEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

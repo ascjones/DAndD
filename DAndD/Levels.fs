@@ -19,29 +19,32 @@ module Levels =
         let cells = 
             let rec loop row grid chars =
                 match chars with
-                | []         -> grid |> List.rev
+                | []         -> grid |> List.rev |> List.toArray
                 | '#'::[]    -> loop (Blocked::row) grid []
                 | c::' '::cs -> loop ((c |> toCell)::row) grid cs
                 | '#'::'\013'::'\010'::cs ->
-                    let row' = Blocked::row |> List.rev
+                    let row' = Blocked::row |> List.rev |> List.toArray
                     loop [] (row'::grid) cs
                 | cs -> failwithf "Failed to parse grid: invalid chars combo %A" <| new System.String(cs |> List.toArray)
             loop [] [] gridChars
 
-        let dim1 = cells |> Seq.map (fun c -> c |> Seq.length) |> Seq.max
-        let dim2 = cells |> Seq.length
-
-        Array2D.init dim1 dim2 (fun x y -> cells |> Seq.nth y |> Seq.nth x)
+        // todo: [AJ] could refactor this to build list in rec loop above
+        seq {
+            for y in [0..cells.Length - 1] do
+                let row = cells.[y]
+                for x in [0..row.Length - 1] do
+                    yield { X = x; Y = y },cells.[y].[x]
+        }
 
     let Level1 = 
         buildGrid @"
 # # # # # # # #
+# b     s     #
+# # # # #  b  #
 #             #
+#   g   #  g  #
 # # # # #     #
-#             #
-#       #     #
-# # # # #     #
-#             #
+# s           #
 # # # # # # # #
-" 
+"
 

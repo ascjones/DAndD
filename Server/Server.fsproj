@@ -52,9 +52,9 @@
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Messages\Messages.fsproj">
-      <Name>Messages</Name>
-      <Project>{fee54f79-7676-4182-8eca-22da3b234dee}</Project>
+    <ProjectReference Include="..\DAndD\DAndD.fsproj">
+      <Name>DAndD</Name>
+      <Project>{9f91e723-fa04-409d-ab7d-d662342eef42}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

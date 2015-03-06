@@ -37,7 +37,7 @@ module Game =
                 player <! PlayerMessage.PlayerCommand cmd
                 state
 
-    let createGame gameId grid system = 
+    let create gameId system = 
         let id = gameId |> gameIdStr
         spawn system id <| actorWithState game { Id = gameId; Players = Map.empty; Grid = Map.empty }
 
