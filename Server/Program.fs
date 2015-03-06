@@ -10,7 +10,20 @@ module Server =
     [<EntryPoint>]
     let main argv = 
         
-        let system = System.create DAndD <| Configuration.load()
+        let system = System.create DAndD <| Configuration.parse(@"
+            akka {
+                actor {
+                    provider = ""Akka.Remote.RemoteActorRefProvider, Akka.Remote""
+                }
+
+                remote {
+                    helios.tcp {
+                        port = 8080
+                        hostname = localhost
+                    }
+                }
+            }
+        ")
         
         let gameId = GameId 1
         let grid = Levels.Level1 |> Seq.toList
