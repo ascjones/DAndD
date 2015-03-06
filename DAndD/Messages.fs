@@ -4,13 +4,15 @@ module Messages =
 
     open DAndD.Model
 
-    type GameMessage = PlayerId * GameCommand
+    type GameMessage = 
+        | LoadGrid of (Coord * Cell) list
+        | PlayerRequest of PlayerId * PlayerRequest
 
     and PlayerMessage =
         | PlayerCommand of PlayerCommand
         | CellResponse of CellResponse
 
-    and GameCommand = 
+    and PlayerRequest = 
         | JoinGame
         | PlayerCommand of PlayerCommand
 

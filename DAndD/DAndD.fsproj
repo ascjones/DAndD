@@ -52,7 +52,9 @@
   <ItemGroup>
     <Compile Include="Model.fs" />
     <Compile Include="Messages.fs" />
+    <Compile Include="Helpers.fs" />
     <Compile Include="Player.fs" />
+    <Compile Include="Cell.fs" />
     <Compile Include="Game.fs" />
     <Compile Include="Levels.fs" />
     <Compile Include="Program.fs" />
