@@ -3,7 +3,10 @@
 module Model = 
 
     [<Literal>]
-    let DAndD = "DAndD"
+    let DAndDServer = "DAndDServer"
+
+    [<Literal>]
+    let DAndDClient = "DAndDClient"
 
     type GameId = GameId of int
     type PlayerId = PlayerId of int

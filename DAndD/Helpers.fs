@@ -16,5 +16,5 @@ module Helpers =
         loop initialState
 
     let gameIdStr gameId = match gameId with GameId id -> sprintf "game-%i" id
-    let gameAddress gameId = sprintf "akka://%s/user/%s" DAndD (gameId |> gameIdStr)
+    let gameAddress gameId = sprintf "akka://%s/user/%s" DAndDServer (gameId |> gameIdStr)
 

@@ -2,7 +2,6 @@
 
 module Server = 
 
-    open Akka.Actor
     open Akka.FSharp
     open DAndD.Messages
     open DAndD.Model
@@ -10,7 +9,7 @@ module Server =
     [<EntryPoint>]
     let main argv = 
         
-        let system = System.create DAndD <| Configuration.parse(@"
+        let system = System.create DAndDServer <| Configuration.parse(@"
             akka {
                 actor {
                     provider = ""Akka.Remote.RemoteActorRefProvider, Akka.Remote""
