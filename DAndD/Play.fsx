@@ -15,7 +15,7 @@ open DAndD
 open DAndD.Model
 open DAndD.Messages
 
-let system = System.create "DAndD" <| Configuration.load()
+let system = System.create DAndD <| Configuration.load()
 
 let gameId = GameId 1
 let game = system |> Game.createGame gameId Levels.Level1

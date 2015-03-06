@@ -6,6 +6,10 @@ module Messages =
 
     type GameMessage = PlayerId * GameCommand
 
+    and PlayerMessage =
+        | PlayerCommand of PlayerCommand
+        | CellResponse of CellResponse
+
     and GameCommand = 
         | JoinGame
         | PlayerCommand of PlayerCommand
@@ -22,5 +26,19 @@ module Messages =
           Sell2 : Item
           Sell3 : Item
           Buy : Item }
+
+    and CellRequest = 
+        | Enter of Coord
+        | View
+
+    and CellResponse =
+        | EnterResponse of EnterResponse
+        | ViewResponse of Cell
+
+    and EnterResponse = 
+        | EnterSuccess of Coord
+        | ItemCollected of Item
+        | CellOccupied of PlayerId
+        | CellBlocked
 
 

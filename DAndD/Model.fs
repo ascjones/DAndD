@@ -2,6 +2,9 @@
 
 module Model = 
 
+    [<Literal>]
+    let DAndD = "DAndD"
+
     type GameId = GameId of int
     type PlayerId = PlayerId of int
 
