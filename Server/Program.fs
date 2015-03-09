@@ -13,6 +13,14 @@ module Server =
             akka {
                 actor {
                     provider = ""Akka.Remote.RemoteActorRefProvider, Akka.Remote""
+
+                    serializers {
+                        json = ""Akka.Serialization.NewtonSoftJsonSerializer""
+                    }
+
+                    serialization-bindings { 
+                      ""DAndD.Messages.GameMessage, DAndD"" = json
+                    } 
                 }
 
                 remote {
