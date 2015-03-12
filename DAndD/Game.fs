@@ -21,6 +21,8 @@ module Game =
         |> Map.ofList
 
     let game mailbox state msg =
+//        printfn "Received Coords %A" msg
+//        state
         match msg with
         | LoadGrid cells ->
             printfn "Loading grid of %i cells" cells.Length

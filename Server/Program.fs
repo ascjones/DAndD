@@ -13,14 +13,6 @@ module Server =
             akka {
                 actor {
                     provider = ""Akka.Remote.RemoteActorRefProvider, Akka.Remote""
-
-                    serializers {
-                        json = ""Akka.Serialization.NewtonSoftJsonSerializer""
-                    }
-
-                    serialization-bindings { 
-                      ""DAndD.Messages.GameMessage, DAndD"" = json
-                    } 
                 }
 
                 remote {
@@ -31,6 +23,7 @@ module Server =
                 }
             }
         ")
+        Serialisation.Init system
         
         let gameId = GameId 1
         let grid = Levels.Level1 |> Seq.toList

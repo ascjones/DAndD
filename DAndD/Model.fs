@@ -24,7 +24,7 @@ module Model =
         | South 
         | West
 
-    and Coord = { X : int; Y : int }
+    type Coord = { X : int; Y : int }
 
    
 

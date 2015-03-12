@@ -57,6 +57,7 @@
     <Compile Include="Cell.fs" />
     <Compile Include="Game.fs" />
     <Compile Include="Levels.fs" />
+    <Compile Include="Serialisation.fs" />
     <Compile Include="Program.fs" />
     <None Include="Play.fsx" />
     <None Include="App.config" />

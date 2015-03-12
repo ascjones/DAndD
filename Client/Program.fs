@@ -13,14 +13,6 @@ module Client =
             akka {
                 actor {
                     provider = ""Akka.Remote.RemoteActorRefProvider, Akka.Remote""
-
-                    serializers {
-                        json = ""Akka.Serialization.NewtonSoftJsonSerializer""
-                    }
-
-                    serialization-bindings { 
-                      ""DAndD.Messages.GameMessage, DAndD"" = json
-                    } 
                 }
 
                 remote {
@@ -31,6 +23,7 @@ module Client =
                 }
             }
         ")
+        Serialisation.Init system
 
         let gameId = GameId 1
         let playerId = PlayerId 1
@@ -38,6 +31,7 @@ module Client =
         let game = system |> select (sprintf "akka.tcp://DAndDServer@localhost:8080/user/%s" (gameIdStr gameId))
 
         game <! PlayerRequest (playerId,JoinGame)
+//        game <! { X = 1; Y = 2 }
         
         System.Console.ReadKey() |> ignore
         0 // return an integer exit code
