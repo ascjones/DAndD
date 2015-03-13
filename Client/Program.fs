@@ -6,17 +6,19 @@ module Client =
     open Akka.FSharp
     open DAndD.Contract
 
+    let playerId = PlayerId 1
+
     let parseCommand (c : char) = 
         match Char.ToUpper(c) with
-        | '<' -> Some (PlayerCommand <| Turn Left) // todo: make into GameMessage.PlayerRequest
-        | '>' -> Some (PlayerCommand <| Turn Right)
-        | '^' -> Some (PlayerCommand <| MoveForwards)
+        | '<' -> Some (Turn Left) // todo: make into GameMessage.PlayerRequest
+        | '>' -> Some (Turn Right)
+        | '^' -> Some MoveForwards
         | _ -> None
 
     let playerClient mailbox game msg = 
         match msg with
         | PlayerCommand cmd ->
-            game <! msg
+            game <! GameMessage.PlayerRequest (playerId, PlayerRequest.PlayerCommand cmd)
             game
         | CellResponse resp ->
             printfn "Response %A received" resp
@@ -42,7 +44,6 @@ module Client =
         InitSerialisation system
 
         let gameId = GameId 1
-        let playerId = PlayerId 1
 
         let game = system |> select (sprintf "akka.tcp://DAndDServer@localhost:8080/user/%s" (gameIdStr gameId))
         let client = spawn system "cli" <| actorWithState playerClient game
@@ -55,7 +56,7 @@ module Client =
             let input = key |> parseCommand
             match input with
             | Some cmd ->
-                client <! cmd
+                client <! ClientMessage.PlayerCommand cmd
             | None -> printfn "Invalid key char %A" key
         
         System.Console.ReadKey() |> ignore
