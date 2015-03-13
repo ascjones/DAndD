@@ -47,12 +47,12 @@ module Player =
                 let newOrientation = state |> turn direction
                 let nextCellCoords = facingCell state.Coords newOrientation
                 let nextCell = selectCell nextCellCoords
-                nextCell <! View
+                nextCell <! (state.Id,View)
                 state
             | MoveForwards ->
                 let newCoords = facingCell state.Coords state.Orientation
                 let cell = selectCell newCoords
-                cell <! Enter newCoords
+                cell <! (state.Id,Enter newCoords)
                 state   
         | PlayerMessage.CellResponse resp ->
             let newState = 

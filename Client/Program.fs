@@ -8,11 +8,11 @@ module Client =
 
     let playerId = PlayerId 1
 
-    let parseCommand (c : char) = 
-        match Char.ToUpper(c) with
-        | '<' -> Some (Turn Left) // todo: make into GameMessage.PlayerRequest
-        | '>' -> Some (Turn Right)
-        | '^' -> Some MoveForwards
+    let parseCommand (c : ConsoleKeyInfo) = 
+        match c.Key with
+        | ConsoleKey.LeftArrow -> Some (Turn Left) // todo: make into GameMessage.PlayerRequest
+        | ConsoleKey.RightArrow -> Some (Turn Right)
+        | ConsoleKey.UpArrow -> Some MoveForwards
         | _ -> None
 
     let playerClient mailbox game msg = 
@@ -52,7 +52,7 @@ module Client =
         game <! PlayerRequest (playerId,JoinGame)
 
         while true do
-            let key = Console.ReadKey().KeyChar
+            let key = Console.ReadKey()
             let input = key |> parseCommand
             match input with
             | Some cmd ->

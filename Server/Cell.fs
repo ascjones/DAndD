@@ -15,20 +15,20 @@ module Cell =
         | Enter coords ->
             match state with
             | Occupied otherPlayerId -> 
-                player <! EnterResponse (CellOccupied otherPlayerId)
+                player <! PlayerMessage.CellResponse (EnterResponse (CellOccupied otherPlayerId))
                 state
             | Blocked ->                
-                player <! EnterResponse CellBlocked
+                player <! PlayerMessage.CellResponse (EnterResponse CellBlocked)
                 state
             | ContainsItem item ->      
-                player <! EnterResponse (ItemCollected item)
-                player <! EnterResponse (EnterSuccess coords)
+                player <! PlayerMessage.CellResponse (EnterResponse (ItemCollected item))
+                player <! PlayerMessage.CellResponse (EnterResponse (EnterSuccess coords))
                 Occupied playerId
             | Empty ->
-                player <! EnterResponse (EnterSuccess coords)
+                player <! PlayerMessage.CellResponse (EnterResponse (EnterSuccess coords))
                 Occupied playerId
         | View -> 
-            player <! ViewResponse state
+            player <! PlayerMessage.CellResponse (ViewResponse state)
             state
 
     let createCell coord state game = 
