@@ -2,17 +2,19 @@
 
 module Player = 
 
+    open Akka.Actor
     open Akka.FSharp
     open DAndD.Contract
    
     type Player = 
         { Id : PlayerId
+          Client : ActorRef
           GameId : GameId
           Orientation : Orientation
           Coords : Coord 
           Items : Item list }
-        static member New gameId id = 
-            { Id = id; GameId = gameId; Orientation = North; Coords = {X = 0; Y = 0}; Items = [] }
+        static member New gameId id client = 
+            { Id = id; Client = client; GameId = gameId; Orientation = North; Coords = {X = 0; Y = 0}; Items = [] }
 
     let playerIdStr playerId = match playerId with PlayerId id -> sprintf "player-%i" id
 
@@ -32,7 +34,7 @@ module Player =
         | East  -> { coords with X = coords.X + 1 }
         | West  -> { coords with X = coords.X - 1 }
 
-    let player mailbox state msg = 
+    let player (mailbox :Actor<_>) state msg = 
         printfn "Player Actor %A handling %A" state msg
         let selectCell coords = 
             let address = sprintf "%s/%i-%i" (gameAddress state.GameId) coords.X coords.Y
@@ -53,17 +55,19 @@ module Player =
                 cell <! Enter newCoords
                 state   
         | PlayerMessage.CellResponse resp ->
-            match resp with
-            | EnterResponse er -> 
-                match er with
-                | EnterSuccess coord -> { state with Coords = coord }
-                | ItemCollected item -> { state with Items = item::state.Items }
-                | CellOccupied playerId -> state
-                | CellBlocked -> state
-            | ViewResponse cell ->
-                printfn "Cell in front is %A" cell
-                state
+            let newState = 
+                match resp with
+                | EnterResponse er -> 
+                    match er with
+                    | EnterSuccess coord -> { state with Coords = coord }
+                    | ItemCollected item -> { state with Items = item::state.Items }
+                    | CellOccupied playerId -> state
+                    | CellBlocked -> state
+                | ViewResponse cell -> state
+            // respond to the client
+            state.Client <! resp
+            newState
 
-    let createPlayer gameId playerId game = 
+    let createPlayer gameId playerId game client = 
         let idString = playerId |> playerIdStr
-        spawn game idString <| actorWithState player (Player.New gameId playerId)
+        spawn game idString <| actorWithState player (Player.New gameId playerId client)

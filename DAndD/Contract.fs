@@ -65,4 +65,8 @@ module Contract =
         | CellOccupied of PlayerId
         | CellBlocked
 
+    and ClientMessage = 
+        | PlayerCommand of PlayerCommand
+        | CellResponse of CellResponse
+
 

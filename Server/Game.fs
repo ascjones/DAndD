@@ -19,9 +19,7 @@ module Game =
             coord,cellActor)
         |> Map.ofList
 
-    let game mailbox state msg =
-//        printfn "Received Coords %A" msg
-//        state
+    let game (mailbox : Actor<_>) state msg =
         match msg with
         | LoadGrid cells ->
             printfn "Loading grid of %i cells" cells.Length
@@ -31,10 +29,12 @@ module Game =
             match req with
             | JoinGame ->
                 printfn "%A joined game" playerId
-                let player = Player.createPlayer state.Id playerId mailbox
+                let playerClient = mailbox.Sender ()
+                let player = Player.createPlayer state.Id playerId mailbox playerClient
                 { state with Players = state.Players |> Map.add playerId player }
-            | PlayerCommand cmd -> 
+            | PlayerRequest.PlayerCommand cmd -> 
                 let player = state.Players |> Map.find playerId
+                let clientRef = mailbox.Sender ()
                 player <! PlayerMessage.PlayerCommand cmd
                 state
 
