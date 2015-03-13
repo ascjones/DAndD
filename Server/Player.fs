@@ -3,8 +3,7 @@
 module Player = 
 
     open Akka.FSharp
-    open DAndD.Model
-    open DAndD.Messages
+    open DAndD.Contract
    
     type Player = 
         { Id : PlayerId

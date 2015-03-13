@@ -1,8 +1,8 @@
 ﻿namespace DAndD
 
 module Levels =
-
-    open DAndD.Model
+    
+    open DAndD.Contract
 
     let buildGrid (gridAscii : string) = 
         let toCell ch = 

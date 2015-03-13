@@ -3,8 +3,7 @@
 module Cell = 
 
     open Akka.FSharp
-    open DAndD.Model
-    open DAndD.Messages
+    open DAndD.Contract
     open DAndD.Helpers
 
     let coordsAsStr coord = sprintf "%i-%i" coord.X coord.Y

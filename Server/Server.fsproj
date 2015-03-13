@@ -47,6 +47,10 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Player.fs" />
+    <Compile Include="Cell.fs" />
+    <Compile Include="Game.fs" />
+    <Compile Include="Levels.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <None Include="paket.references" />

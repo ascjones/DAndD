@@ -3,8 +3,7 @@
 module Client = 
 
     open Akka.FSharp
-    open DAndD.Messages
-    open DAndD.Model
+    open DAndD.Contract
 
     [<EntryPoint>]
     let main argv = 
@@ -23,7 +22,7 @@ module Client =
                 }
             }
         ")
-        Serialisation.Init system
+        InitSerialisation system
 
         let gameId = GameId 1
         let playerId = PlayerId 1

@@ -4,8 +4,7 @@ module Game =
 
     open Akka.Actor
     open Akka.FSharp
-    open DAndD.Model
-    open DAndD.Messages
+    open DAndD.Contract
     open DAndD.Helpers
 
     type Game = 
