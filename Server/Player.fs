@@ -34,8 +34,7 @@ module Player =
         | East  -> { coords with X = coords.X + 1 }
         | West  -> { coords with X = coords.X - 1 }
 
-    let player (mailbox :Actor<_>) state msg = 
-        printfn "Player Actor %A handling %A" state msg
+    let player (mailbox :Actor<_>) (state: Player) msg =         
         let selectCell coords = 
             let address = sprintf "%s/%i-%i" (gameAddress state.GameId) coords.X coords.Y
             printfn "Selecting cell %s" address
@@ -44,16 +43,31 @@ module Player =
         | PlayerMessage.PlayerCommand cmd ->
             match cmd with
             | Turn direction -> 
-                let newOrientation = state |> turn direction
-                let nextCellCoords = facingCell state.Coords newOrientation
-                let nextCell = selectCell nextCellCoords
-                nextCell <! (state.Id,View)
-                state
+                let newOrientation = 
+                    state 
+                    |> turn direction
+                
+                let nextCell = 
+                    facingCell state.Coords newOrientation
+                    |> selectCell
+                    
+                nextCell <! (state.Id, View)
+
+                printfn "Turn %A from to %A" state.Orientation newOrientation 
+                { 
+                    state with
+                        Orientation = newOrientation
+                }
             | MoveForwards ->
                 let newCoords = facingCell state.Coords state.Orientation
                 let cell = selectCell newCoords
                 cell <! (state.Id,Enter newCoords)
-                state   
+                
+                printfn "Moved forward from %A to %A" state.Coords newCoords
+                {
+                    state with
+                        Coords = newCoords
+                }
         | PlayerMessage.CellResponse resp ->
             let newState = 
                 match resp with
