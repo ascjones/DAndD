@@ -24,7 +24,10 @@ module Contract =
         | South 
         | West
 
-    type Coord = { X : int; Y : int }
+    [<StructuredFormatDisplay("({AsString})")>]
+    type Coord = 
+        { X : int; Y : int }
+        member this.AsString = sprintf "X=%i, Y=%i" this.X this.Y
 
     type GameMessage = 
         | LoadGrid of (Coord * Cell) list
@@ -41,10 +44,12 @@ module Contract =
     and PlayerCommand =
         | Turn of Direction
         | MoveForwards
-        | Trade of TradeItemsCommand        
+        | Trade of TradeItemsCommand
+              
     and Direction = 
         | Left 
         | Right
+
     and TradeItemsCommand = 
         { Sell1 : Item
           Sell2 : Item
