@@ -2,13 +2,14 @@
 
 module Player = 
 
+    open Akka
     open Akka.Actor
     open Akka.FSharp
     open DAndD.Contract
    
     type Player = 
         { Id : PlayerId
-          Client : ActorRef
+          Client : IActorRef
           GameId : GameId
           Orientation : Orientation
           Coords : Coord 

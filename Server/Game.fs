@@ -9,8 +9,8 @@ module Game =
 
     type Game = 
         { Id : GameId
-          Grid : Map<Coord, ActorRef>
-          Players : Map<PlayerId, ActorRef> }
+          Grid : Map<Coord, IActorRef>
+          Players : Map<PlayerId, IActorRef> }
 
     let private buildGrid game cells =
         cells
